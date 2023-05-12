@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.item_todo.view.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class TodoAdapter(
     private val todos: MutableList<Todo>
@@ -25,11 +27,13 @@ class TodoAdapter(
         )
     }
 
-    private fun toggleStrikeThrough(tvTodoTitle: TextView, isChecked: Boolean) {
+    private fun toggleStrikeThrough(tvTodoTitle: TextView,datatext: TextView, isChecked: Boolean) {
         if(isChecked) {
             tvTodoTitle.paintFlags = tvTodoTitle.paintFlags or STRIKE_THRU_TEXT_FLAG
+            datatext.paintFlags = datatext.paintFlags or STRIKE_THRU_TEXT_FLAG
         } else {
             tvTodoTitle.paintFlags = tvTodoTitle.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
+            datatext.paintFlags = datatext.paintFlags and STRIKE_THRU_TEXT_FLAG.inv()
         }
     }
 
@@ -47,12 +51,15 @@ class TodoAdapter(
 
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
         val curTodo = todos[position]
+        val sdf = SimpleDateFormat("dd-MM-yyyy HH:mm")
+        val currentDateAndTime = sdf.format(Date())
         holder.itemView.apply {
             tvTodoTitle.text = curTodo.title
             cbDone.isChecked = curTodo.isChecked
-            toggleStrikeThrough(tvTodoTitle, curTodo.isChecked)
+            datatext.text = currentDateAndTime
+            toggleStrikeThrough(tvTodoTitle,datatext, curTodo.isChecked)
             cbDone.setOnCheckedChangeListener { _, isChecked ->
-                toggleStrikeThrough(tvTodoTitle, isChecked)
+                toggleStrikeThrough(tvTodoTitle,datatext, isChecked)
                 curTodo.isChecked = !curTodo.isChecked
             }
         }
